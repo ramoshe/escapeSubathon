@@ -1,0 +1,7 @@
+[build]
+  publish = "public"
+  command = "echo 'noop build'"
+
+[[edge_functions]]
+path = "/api/hello"
+function = "hello"
