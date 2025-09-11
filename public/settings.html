@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+
+    <title>Subathon Goal Meter</title>
+</head>
+<body>
+    <div class="meter">
+        <div class="title">
+            <span>Total</span>
+            <span class="total">0</span>
+        </div>
+        <span class="glass">
+            <span class="amount" style="height: 0%"></span>
+        </span>
+        <div class="bulb">
+            <span class="red-circle"></span>
+            <span class="filler"></span>
+        </div>
+    </div>
+    <div class="goals">
+        <span>100: OF Stream</span>
+        <span>90: Booty Bounce</span>
+        <span>80: Cha-Cha Slide</span>
+        <span>70: Karaoke Duet</span>
+        <span>60: Body Shots</span>
+        <span>50: Bikini Time</span>
+        <span>40: Pillow Fight</span>
+        <span>30: Power Half Hour</span>
+        <span>20: Karaoke Duet</span>
+        <span>10: Tees to Tanks</span>
+    </div>
+    <div class="rewards">
+        <span>Drop 2 = Shots</span>
+        <span>5 = Double Bounce</span>
+        <span>10 = Smooches</span>
+    </div>
+    <div id="form">
+        <fieldset id="streamer-selector">
+            <input type="radio" id="amy" name="streamer" value="Amy">
+            <label for="amy">Amy</label>
+            <input type="radio" id="ramo" name="streamer" value="Ramo">
+            <label for="ramo">Ramo</label>
+        </fieldset>
+        <input type="button" id="add-1" class="button" value="1 / $5" onclick="addSubs(1)">
+        <input type="button" id="add-2" class="button" value="2 / $10" onclick="addSubs(2)">
+        <input type="button" id="add-3" class="button" value="3 / $15" onclick="addSubs(3)">
+        <br />
+        <input type="button" id="add-4" class="button" value="4 / $20" onclick="addSubs(4)">
+        <input type="button" id="add-5" class="button" value="5 / $25" onclick="addSubs(5)">
+        <input type="button" id="add-10" class="button" value="10 / $50" onclick="addSubs(10)">
+        <br /><br />
+        <input type="text" id="donation-amount">
+        <input type="submit" id="add-donation" class="button" value="Add $$" onclick="addDonation()">
+
+        <div id="streamer-counts">
+            <p>Amy: <span id="amy-count">0</span></p>
+            <p>Ramo: <span id="ramo-count">0</span></p>
+        </div>
+
+        <div class="github-link">
+            <p>Coded by <a href="https://theramoshe.com">theRamoShe</a></p>
+            <p>If you want to use this meter, or you're just curious, check out the <a href="https://github.com/ramoshe/subathon" target="_blank">Github Repo</a> to learn more about it.</p>
+        </div>
+    </div>
+
+    <div class="ml-embedded" data-form="40xxz1"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
