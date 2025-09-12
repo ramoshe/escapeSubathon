@@ -17,31 +17,45 @@ const rewards = [
 const goals = [
     {   "amt": 10,  "emo": "💋",  "txt": "Sexy ASMR"
     },
-    {   "amt": 20,  "emo": "📞",  "txt": "Prank Call"
+    {   "amt": 40,  "emo": "🖐",  "txt": "Never Have I"
     },
-    {   "amt": 30,  "emo": "🧊",  "txt": "Ice Bucket"
+    {   "amt": 60,  "emo": "🧊",  "txt": "Ice Bucket"
     },
-    {   "amt": 40,  "emo": "🧁",  "txt": "GIF Emote"
+    {   "amt": 80,  "emo": "💐",  "txt": "Speed Dating"
     },
-    {   "amt": 50,  "emo": "💐",  "txt": "Speed Dating"
+    {   "amt": 100, "emo": "🎲",  "txt": "WILDCARD"
     },
-    {   "amt": 60,  "emo": "🎁",  "txt": "Coaster Giveaway"
+    {   "amt": 120, "emo": "💬",  "txt": "Chat Roulette"
     },
-    {   "amt": 70,  "emo": "🍕",  "txt": "Pizza Challenge"
+    {   "amt": 140, "emo": "🧁",  "txt": "GIF Emote"
     },
-    {   "amt": 80,  "emo": "💬",  "txt": "Chat Roulette"
+    {   "amt": 170,  "emo": "🍕",  "txt": "Pizza Challenge"
     },
-    {   "amt": 100, "emo": "😱",  "txt": "Horror Game"
+    {   "amt": 200, "emo": "🎲",  "txt": "WILDCARD"
     },
-    {   "amt": 120, "emo": "🔥",  "txt": "Fire Pit Stream"
+    {   "amt": 230, "emo": "🔥",  "txt": "Fire Pit Stream"
     },
-    {   "amt": 140, "emo": "🍑",  "txt": "Booty Bed Hour"
+    {   "amt": 260, "emo": "💃🏽",  "txt": "Dance Challenge"
+    },
+    {   "amt": 300, "emo": "🎲",  "txt": "WILDCARD"
+    },
+    {   "amt": 340, "emo": "🎁",  "txt": "Coaster Raffle"
+    },
+    {   "amt": 380, "emo": "😱",  "txt": "Horror Game"
+    },
+    {   "amt": 420, "emo": "☘️",  "txt": "Baked Baking"
+    },
+    {   "amt": 460, "emo": "🍑",  "txt": "Booty Bed Hour"
+    },
+    {   "amt": 500, "emo": "🎲",  "txt": "WILDCARD"
+    },
+    {   "amt": 550, "emo": "🏥",  "txt": "Nurse Ramo"
+    },
+    {   "amt": 600, "emo": "🎲",  "txt": "WILDCARD"
+    },
+    {   "amt": 200, "emo": "🎨",  "txt": "Glow Body Art"
     },
     {   "amt": 160, "emo": "💝",  "txt": "Art Giveaway"
-    },
-    {   "amt": 180, "emo": "🏥",  "txt": "Nurse Ramo"
-    },
-    {   "amt": 200, "emo": "🎨",  "txt": "Body Art Stream"
     }
 ];
 
@@ -52,21 +66,20 @@ window.onload = () => {
 
 // -= Create the Slides
 let slides = [];
-const rewardSlide = listSlide("Rewards", rewards, "reward");
-const goalSlide1 = listSlide("Goals", goals.slice(0, 7), "goal");
-const goalSlide2 = listSlide("more Goals", goals.slice(7), "goal");
-slides.push(rewardSlide, goalSlide1, goalSlide2);
+const rewardSlide = makeSlide("Rewards", rewards, "reward", "fade");
+const goalSlide1 = makeSlide("Goals", goals.slice(0, 7), "goal", "fadepush");
+const goalSlide2 = makeSlide("more Goals", goals.slice(7, 14), "goal", "push");
+const goalSlide3 = makeSlide("more Goals", goals.slice(14), "goal", "pushfade");
+slides.push(rewardSlide, goalSlide1, goalSlide2, goalSlide3);
 
 // -= Adds slides to DOM
 const container = document.getElementById('container');
 slides.forEach(slide => {
-    const slideDiv = slide;
-    slideDiv.classList.add('slide', 'fade');
-    container.appendChild(slideDiv);
+    container.appendChild(slide);
 });
 
 // -= Builder for list ITEM with amount, emote, and text
-function listItem(amt, emo, txt, cls) {
+function makeListItem(amt, emo, txt, cls) {
     const item = document.createElement('li');
     item.classList.add(cls);
     let amtP = ``;
@@ -77,18 +90,19 @@ function listItem(amt, emo, txt, cls) {
 }
 
 // -= Builder for list SLIDE
-function listSlide(title, items, classname) {
-    const listDiv = document.createElement('div');
-    const listTitle = document.createElement('h1');
-    listTitle.textContent = title;
-    listDiv.appendChild(listTitle);
-    const listList = document.createElement('ul');
-    listDiv.appendChild(listList);
+function makeSlide(title, items, classname, animation) {
+    const slideDiv = document.createElement('div');
+    slideDiv.classList.add('slide', animation);
+    const slideTitle = document.createElement('h1');
+    slideTitle.textContent = title;
+    slideDiv.appendChild(slideTitle);
+    const slideList = document.createElement('ul');
+    slideDiv.appendChild(slideList);
     items.forEach(item => {
-        const theItem = listItem(item.amt, item.emo, item.txt, classname);
-        listList.appendChild(theItem);
+        const listItem = makeListItem(item.amt, item.emo, item.txt, classname);
+        slideList.appendChild(listItem);
     });
-    return listDiv;
+    return slideDiv;
 }
 
 // -= Cycles thorough slides
