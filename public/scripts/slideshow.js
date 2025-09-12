@@ -1,15 +1,20 @@
-// -= Timing controls
-// const overlapTime = 1400;
-// const holdTime = 10000;
-const overlapTime = 700; // test
-const holdTime = 1400; // test
+// -= TIMING CONTROLS
+const overlapTime = 1400;
+    // REAL
+// const holdTime = 9800;
+// const shortHoldTime = 4900;
+    // TEST
+const holdTime = 4200;
+const shortHoldTime = 2100;
 
 // -= Set up the slides
 const container = document.getElementById('container');
-const hardSlides = Array.from(container.querySelectorAll('.slide'));
-const slides = [...hardSlides, ...window.generatedSlides];
+
+const slidesFromHTML = Array.from(container.querySelectorAll('.slide'));
 
 window.generatedSlides.forEach(slide => container.appendChild(slide));
+
+const slides = [...slidesFromHTML, ...window.generatedSlides];
 
 slides[0].style.opacity = '1';
 slides[0].style.visibility = 'visible';
@@ -41,7 +46,7 @@ function showSlide(nextIndex) {
 
     // Determine overlap behavior
     const overlapIn = ['push', 'pushfade'].includes(nextEffect);
-    const overlapOut = ['push', 'fadepush'].includes(currentEffect); // <-- pushfade removed
+    const overlapOut = ['push', 'fadepush'].includes(currentEffect);
 
     if (overlapOut) {
         // Animate current slide out with overlap
@@ -62,7 +67,7 @@ function showSlide(nextIndex) {
     }
 
     // Animate next slide in
-    const delay = overlapOut ? 0 : overlapTime; // if no overlap, wait for current fade
+    const delay = overlapOut ? 0 : overlapTime; // if no overlap, wait for fade
     setTimeout(() => {
         nextSlide.style.transition = `opacity ${overlapTime}ms ease, transform ${overlapTime}ms ease`;
         nextSlide.style.opacity = '1';
@@ -70,7 +75,8 @@ function showSlide(nextIndex) {
     }, delay);
 
     // Schedule next slide
-    const totalDelay = overlapOut ? holdTime : holdTime + overlapTime;
+    const effectiveHold = nextSlide.classList.contains("short") ? shortHoldTime : holdTime;
+    const totalDelay = overlapOut ? effectiveHold : effectiveHold + overlapTime;
     setTimeout(() => {
         current = nextIndex;
         showSlide((current + 1) % slides.length);

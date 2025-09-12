@@ -9,5 +9,7 @@ function countHours() {
     hours.innerHTML = diffHours.toFixed(0);
 }
 
-countHours();
-setTimeout(countHours, 1800000);
+window.onload = () => {
+    countHours();
+    setTimeout(countHours, 1800000);
+}
