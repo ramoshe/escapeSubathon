@@ -59,40 +59,14 @@ const goals = [
     }
 ];
 
+// -= Holder for slides
+window.generatedSlides = [];
 
-window.onload = () => {
-    showSlides(slideIndex);
-}
-
-// -= Create the Slides
-let slides = [];
-const rewardSlide = makeSlide("Rewards", rewards, "reward", "fade");
-const goalSlide1 = makeSlide("Goals", goals.slice(0, 7), "goal", "fadepush");
-const goalSlide2 = makeSlide("more Goals", goals.slice(7, 14), "goal", "push");
-const goalSlide3 = makeSlide("more Goals", goals.slice(14), "goal", "pushfade");
-slides.push(rewardSlide, goalSlide1, goalSlide2, goalSlide3);
-
-// -= Adds slides to DOM
-const container = document.getElementById('container');
-slides.forEach(slide => {
-    container.appendChild(slide);
-});
-
-// -= Builder for list ITEM with amount, emote, and text
-function makeListItem(amt, emo, txt, cls) {
-    const item = document.createElement('li');
-    item.classList.add(cls);
-    let amtP = ``;
-    if (cls == 'reward') { amtP = `<p class="amt"><span class="dol">$${amt*5}</span>${amt}</p>` }
-    if (cls == 'goal') { amtP = `<p class="amt">${amt}</p>` }
-    item.innerHTML = amtP + `<p class="emo">${emo}</p><p class="txt">${txt}</p>`;
-    return item;
-}
-
-// -= Builder for list SLIDE
-function makeSlide(title, items, classname, animation) {
+// -= HELPER Builds list SLIDE from goals and rewards data
+function makeListSlide(title, items, classname, animation) {
     const slideDiv = document.createElement('div');
     slideDiv.classList.add('slide', animation);
+    slideDiv.dataset.effect = animation;
     const slideTitle = document.createElement('h1');
     slideTitle.textContent = title;
     slideDiv.appendChild(slideTitle);
@@ -105,16 +79,21 @@ function makeSlide(title, items, classname, animation) {
     return slideDiv;
 }
 
-// -= Cycles thorough slides
-let slideIndex = 0;
-function showSlides() {
-    let i;
-    let slides = document.getElementsByClassName("slide");
-    for (i = 0; i < slides.length; i++) {
-        slides[i].style.display = "none";
-    }
-    slideIndex++;
-    if (slideIndex > slides.length) {slideIndex = 1}
-    slides[slideIndex-1].style.display = "flex";
-    setTimeout(showSlides, 10000);
+// -= HELPER - Builds list ITEM with amount, emote, and text
+function makeListItem(amt, emo, txt, cls) {
+    const item = document.createElement('li');
+    item.classList.add(cls);
+    let amtP = ``;
+    if (cls == 'reward') { amtP = `<p class="amt"><span class="dol">$${amt*5}</span>${amt}</p>` }
+    if (cls == 'goal') { amtP = `<p class="amt">${amt}</p>` }
+    item.innerHTML = amtP + `<p class="emo">${emo}</p><p class="txt">${txt}</p>`;
+    return item;
 }
+
+// -= Create the Slides
+const rewardSlide = makeListSlide("Rewards", rewards, "reward", "fade");
+const goalSlide1 = makeListSlide("Goals", goals.slice(0, 7), "goal", "fadepush");
+const goalSlide2 = makeListSlide("more Goals", goals.slice(7, 14), "goal", "push");
+const goalSlide3 = makeListSlide("more Goals", goals.slice(14), "goal", "pushfade");
+
+window.generatedSlides.push(rewardSlide, goalSlide1, goalSlide2, goalSlide3);

@@ -10,6 +10,9 @@ body {
     background: transparent;
     width: 100vw;
     height: 100vh;
+    font-family: 'Nunito';
+    font-weight: 600;
+    font-size: 250%;
 }
 #container {
     margin: 0;
@@ -17,16 +20,19 @@ body {
     width: 600px;
     height: 600px;
     /* background-color: #0a0a0a; */
-    font-family: 'Nunito';
-    font-weight: 600;
-    font-size: 250%;
+    position: relative;
+    overflow: hidden;
 }
 .slide {
+    position: absolute;
+    inset: 0;
     height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    visibility: hidden;
+    opacity: 0;
 }
 h1 {
     font-family: 'Kalam';
@@ -69,7 +75,7 @@ li {
 }
 
 /* Fading animation */
-.fade {
+/* .fade {
     animation-name: fade;
     animation-duration: 10000ms;
 }
@@ -77,10 +83,10 @@ li {
     0% { opacity: 0; }
     15%, 85% { opacity: 1; }
     100% { opacity: 0; }
-}
+} */
 
 /* Pushing animation */
-.push {
+/* .push {
     animation-name: push;
     animation-duration: 10000ms;
 }
@@ -88,10 +94,10 @@ li {
     0% { opacity: 0; transform: translateY(100vh); }
     15%, 85% { opacity: 1; transform: none; }
     100% { opacity: 0; transform: translateY(-100vh); }
-}
+} */
 
 /* Fade IN, Push OUT animation */
-.fadepush {
+/* .fadepush {
     animation-name: fadepush;
     animation-duration: 10000ms;
 }
@@ -99,10 +105,10 @@ li {
     0% { opacity: 0; transform: none; }
     15%, 85% { opacity: 1; transform: none; }
     100% { opacity: 0; transform: translateY(-100vh); }
-}
+} */
 
 /* Push IN, Fade OUT animation */
-.pushfade {
+/* .pushfade {
     animation-name: pushfade;
     animation-duration: 10000ms;
 }
@@ -110,4 +116,4 @@ li {
     0% { opacity: 0; transform: translateY(100vh); }
     15%, 85% { opacity: 1; transform: none; }
     100% { opacity: 0; transform: none; }
-}
+} */
