@@ -1,17 +1,23 @@
 *, *::after, *::before {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 body {
-    width: 600px;
-    height: 600px;
-    color: white;
+    margin: 0;
+    padding: 0;
+    color: #eee;
+    background: transparent;
 }
 #container {
+    margin: 0;
+    padding: 0;
+    width: 600px;
+    height: 600px;
+    /* background-color: #0a0a0a; */
     font-family: 'Nunito';
     font-weight: 600;
-    font-size: 2vw;
-    height: 500px;
+    font-size: 3vw;
 }
 .slide {
     height: 100%;
@@ -23,14 +29,13 @@ body {
 h1 {
     font-family: 'Kalam';
     text-align: center;
-    margin-top: .5em;
     margin-bottom: 0;
     font-size: 4vw;
     font-weight: 800;
 }
 li {
     display: flex;
-    gap: 1em;
+    gap: .7em;
     align-items: center;
     margin-bottom: .14em;
 }
@@ -49,7 +54,7 @@ li {
 }
 .dol {
     font-size: 70%;
-    opacity: 70%;
+    opacity: 50%;
     font-style: italic;
     font-family: 'Nunito';
     justify-self: flex-start;
