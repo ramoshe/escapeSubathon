@@ -1,0 +1,48 @@
+.bigemo {
+    font-size: 200%;
+    margin: .4em;
+    animation: bounce 7000ms infinite;
+}
+@keyframes bounce {
+    0%, 5%, 15%, 40% {
+        animation-timing-function:cubic-bezier(.215,.61,.355,1);
+        transform:translateZ(0);
+    }
+    8%, 10% {
+        animation-timing-function:cubic-bezier(.755,.05,.855,.06);
+        transform:translate3d(0,-30px,0) scaleY(1.1);
+    }
+    20% {
+        animation-timing-function:cubic-bezier(.755,.05,.855,.06);
+        transform:translate3d(0,-15px,0) scaleY(1.05);
+    }
+    25% {
+        transition-timing-function:cubic-bezier(.215,.61,.355,1);
+        transform:translateZ(0) scaleY(.95);
+    }
+    30% {
+        transform:translate3d(0,-4px,0) scaleY(1.02);
+    }
+}
+
+/* @keyframes bounce {
+    0%, 20%, 53%, 100% {
+        animation-timing-function:cubic-bezier(.215,.61,.355,1);
+        transform:translateZ(0);
+    }
+    40%, 43% {
+        animation-timing-function:cubic-bezier(.755,.05,.855,.06);
+        transform:translate3d(0,-30px,0) scaleY(1.1);
+    }
+    70%{
+        animation-timing-function:cubic-bezier(.755,.05,.855,.06);
+        transform:translate3d(0,-15px,0) scaleY(1.05);
+    }
+    80%{
+        transition-timing-function:cubic-bezier(.215,.61,.355,1);
+        transform:translateZ(0) scaleY(.95);
+    }
+    90%{
+        transform:translate3d(0,-4px,0) scaleY(1.02);
+    }
+} */

@@ -4,8 +4,8 @@ const overlapTime = 1400;
 // const holdTime = 9800;
 // const shortHoldTime = 4900;
     // TEST
-const holdTime = 4200;
-const shortHoldTime = 2100;
+const holdTime = 2100;
+const shortHoldTime = 1400;
 
 // -= Set up the slides
 const container = document.getElementById('container');

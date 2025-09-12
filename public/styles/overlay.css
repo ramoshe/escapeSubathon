@@ -1,3 +1,5 @@
+@import url("emobounce.css");
+
 *, *::after, *::before {
     margin: 0;
     padding: 0;
@@ -34,12 +36,22 @@ body {
     visibility: hidden;
     opacity: 0;
 }
-h1 {
+h1, h2 {
     font-family: 'Kalam';
     text-align: center;
     margin-bottom: 0;
-    font-size: 140%;
+    line-height: 100%;
+    font-size: 150%;
     font-weight: 800;
+}
+h2 {
+    font-size: 120%;
+    font-family: 'Nunito';
+    margin-top: 1em;
+}
+.number {
+    font-family: 'Courier';
+    font-size: 340%;
 }
 li {
     display: flex;

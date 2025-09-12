@@ -6,7 +6,7 @@ window.menuData = {
         },
         {   "amt": 3,   "emo": "👤",  "txt": "Name or Pic"
         },
-        {   "amt": 4,   "emo": "🌟",  "txt": "*Goal Special*"
+        {   "amt": 4,   "emo": "🌟",  "txt": "Goal Special"
         },
         {   "amt": 5,   "emo": "👙",  "txt": "Outfit Choice"
         },
@@ -58,5 +58,21 @@ window.menuData = {
         },
         {   "amt": 160, "emo": "💝",  "txt": "Art Giveaway"
         }
-    ]
+    ],
+    IRLrewards: [
+        {   "amt": 1,   "emo": "⁉️",  "txt": "Something"
+        },
+        {   "amt": 2,   "emo": "⁉️",  "txt": "Something"
+        },
+        {   "amt": 3,   "emo": "⁉️",  "txt": "Something"
+        },
+        {   "amt": 4,   "emo": "🌟",  "txt": "Goal Special"
+        },
+        {   "amt": 5,   "emo": "⁉️",  "txt": "Something"
+        },
+        {   "amt": 10,  "emo": "🍭",  "txt": "Treat Me"
+        },
+        {   "amt": 20,  "emo": "🚀",  "txt": "Where to Next"
+        }
+    ],
 }

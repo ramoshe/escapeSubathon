@@ -14,17 +14,28 @@
 <body>
     <div id="container">
         <div class="slide fade short">
-            <h1>Total Hours: <span id="hours">0</span></h1>
+            <h1 class="bigemo">⏳</h1>
+            <h1>Total Hours</h1>
+            <h1 class="number"><span id="hours">0</span></h1>
         </div>
         <div class="slide fade short">
-            <h1>Sub Count: <span id="count">0</span></h1>
+            <h1 class="bigemo">🎉</h1>
+            <h1>Sub Count</h1>
+            <h1 class="number"><span id="count">0</span></h1>
         </div>
         <div class="slide fade short">
-            <h1>Current Goal: <span id="currentgoal">Something</span></h1>
+            <h1 class="bigemo" id="goalemo">🎲</h1>
+            <h1>Next Goal</h1>
+            <h2><span id="nextgoal">Something</span></h2>
         </div>
+        <!-- <div id="sleep" class="slide fade short" style="display: none;">
+            <h1 class="bigemo">😴</h1>
+            <h1>Rewards & Goals are paused</h1>
+            <h2>will resume upon awakening</h2>
+        </div> -->
     </div>
 
-    <script src="scripts/hours.js"></script>
+    <script src="scripts/counters.js"></script>
     <script src="scripts/menu.js"></script>
     <script src="scripts/slides.js"></script>
     <script src="scripts/slideshow.js"></script>

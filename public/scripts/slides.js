@@ -1,6 +1,7 @@
 // -= Pull in menu data
 const rewards = window.menuData.rewards;
 const goals = window.menuData.goals;
+const IRLrewards = window.menuData.IRLrewards;
 
 // -= Holder for slides
 window.generatedSlides = [];
@@ -34,9 +35,26 @@ function makeListItem(amt, emo, txt, cls) {
 }
 
 // -= Create the Slides
-const rewardSlide = makeListSlide("Rewards", rewards, "reward", "fade");
 const goalSlide1 = makeListSlide("Goals", goals.slice(0, 7), "goal", "fadepush");
 const goalSlide2 = makeListSlide("more Goals", goals.slice(7, 14), "goal", "push");
-const goalSlide3 = makeListSlide("more Goals", goals.slice(14), "goal", "pushfade");
+const goalSlide3 = makeListSlide("even more Goals", goals.slice(14), "goal", "pushfade");
 
-window.generatedSlides.push(rewardSlide, goalSlide1, goalSlide2, goalSlide3);
+window.generatedSlides.push(goalSlide1, goalSlide2, goalSlide3);
+
+window.sleeping = true;
+
+if (window.sleeping) {
+    const sleepSlide = document.createElement('div');
+    sleepSlide.classList.add('slide', 'fade');
+    sleepSlide.dataset.effect = 'fade';
+    sleepSlide.innerHTML = `<h1 class="bigemo">😴</h1>
+            <h1>Rewards & Goals are paused</h1>
+            <h2>will resume upon awakening</h2>`
+    window.generatedSlides.push(sleepSlide);
+} else if (window.IRLactive) {
+    const IRLrewardSlide = makeListSlide("IRL Rewards", IRLrewards, "reward", "fade");
+    window.generatedSlides.push(IRLrewardSlide);
+} else {
+    const rewardSlide = makeListSlide("Rewards", rewards, "reward", "fade");
+    window.generatedSlides.push(rewardSlide);
+}
