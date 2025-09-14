@@ -4,59 +4,54 @@
 // -toggle IRL
 // -toggle Sleep
 
-function addDonation() {
-    // if (isNameSelected()) {
-        const total = document.querySelector(".total");
-        const amount = document.querySelector(".amount");
+const settingsMsg = document.getElementById('settingsMsg');
+const settingsForm = document.getElementById('settingsForm');
 
-        let donation = document.querySelector("#donation-amount").value;
-        donation = donation / 5;
+settingsForm.onsubmit = async (e) => {
+  e.preventDefault();
 
-        // countWho(donation);
+  if (!window.currentUser || !window.currentPass) {
+    settingsMsg.textContent = "You must log in first.";
+    return;
+  }
 
-        let currentTotal = parseFloat(total.innerHTML);
-        let currentAmount = parseFloat(amount.style.height);
+  const sendSettings = [];
 
-        const newTotal = parseFloat(currentTotal) + parseFloat(donation);
-        const newAmount = currentAmount + ((donation / goal) * 100);
-        // console.log(`${newTotal} ${newAmount}%`);
+  const subsToAdd = parseInt(document.getElementById('subsToAdd').value);
+  // TODO
 
-        total.innerHTML = `${newTotal}`;
-        amount.style.height = `${newAmount}%`;
+  const dollsToAdd = parseInt(document.getElementById('dollsToAdd').value.trim());
+  // TODO
 
-        document.querySelector("#donation-amount").value = "";
-    // }
-}
 
-var input = document.getElementById("donation-amount");
-input.addEventListener("keypress", function (event) {
-    if (event.key === "Enter") {
-        // if (isNameSelected()) {
-            event.preventDefault();
-            document.getElementById("add-donation").click();
-        // }
+  const resetCount = parseInt(document.getElementById('resetCount').value.trim());
+  resetCount ? sendSettings.push({setting: subCount, value: resetCount}) : null;
+
+  const sleepToggle = document.getElementById('sleepToggle').value;
+  sleepToggle ? sendSettings.push({setting: sleepActive, value: true}) : sendSettings.push({setting: sleepActive, value: false});
+
+  const irlToggle = document.getElementById('irlToggle').value;
+  irl ? sendSettings.push({setting: irlActive, value: true}) : sendSettings.push({setting: irlActive, value: false});
+
+  try {
+    const res = await fetch('/.netlify/functions/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: window.currentUser,
+        password: window.currentPass,
+        settings: sendSettings
+      })
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      settingsMsg.textContent = "Settings updated successfully!";
+    } else {
+      settingsMsg.textContent = "Error: " + (data.error || "Update failed");
     }
-});
-
-function addSubs(n) {
-    // if (isNameSelected()) {
-        const total = document.querySelector(".total");
-        const amount = document.querySelector(".amount");
-
-        const donation = n;
-
-        // countWho(n);
-
-        let currentTotal = parseFloat(total.innerHTML);
-        let currentAmount = parseFloat(amount.style.height);
-
-        const newTotal = parseFloat(currentTotal) + parseFloat(donation);
-        const newAmount = currentAmount + ((donation / goal) * 100);
-        // console.log(`${newTotal} ${newAmount}%`);
-
-        total.innerHTML = `${newTotal}`;
-        amount.style.height = `${newAmount}%`;
-
-        document.querySelector("#donation-amount").value = "";
-    // }
-}
+  } catch (err) {
+    settingsMsg.textContent = "Server error while saving settings";
+    console.error(err);
+  }
+};

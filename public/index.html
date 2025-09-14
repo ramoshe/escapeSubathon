@@ -1,60 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
   <title>Overlay Control</title>
+  <link rel="stylesheet" href="styles/index.css">
 </head>
 <body>
   <!-- LOGIN FORM -->
   <div id="login-container">
-    <h2>Enter Credentials</h2>
-    <input id="username" placeholder="Username">
-    <input id="password" type="password" placeholder="Password">
+    <h1>Enter Credentials</h1>
+    <label for="username">Name</label>
+    <input id="username">
+    <label for="password">Code</label>
+    <input id="password" type="password">
     <button id="loginBtn">Login</button>
-    <p id="error" style="color:red;"></p>
+    <p id="error" class="error"></p>
   </div>
 
-  <!-- SETTINGS / COUNTERS -->
+  <!-- SETTINGS FORM (hidden at first) -->
+  <!-- <div id="settings-container"> -->
   <div id="settings-container" style="display:none;">
-    <h2>Overlay Settings</h2>
+    <h1>Overlay Settings</h1>
+    <h2>Current Sub Count: <span id="count">0</span></h2>
+    <p id="settingsMsg" class="msg"></p>
+    <form>
+      <label for="subsToAdd">Add Subs</label>
+      <input type="text" class="input" id="subsToAdd" />
 
-    <div>
-      <p>Sub Count: <span id="count">0</span></p>
-      <p>Hours: <span id="hours">0</span></p>
-    </div>
-    <!-- Add more overlay controls here -->
+      <label for="dollsToAdd">Add Dollars</label>
+      <input type="text" class="input" id="dollsToAdd" />
+
+      <label for="resetCount">Reset Sub Count</label>
+      <input type="text" class="input" id="resetCount"/>
+
+      <input type="checkbox" id="sleepToggle" name="sleep" />
+      <label for="sleep">Sleep Stream Active</label>
+
+      <input type="checkbox" id="irlToggle" name="irl" />
+      <label for="irl">IRL Stream Active</label>
+
+      <button type="submit">Submit</button>
+    </form>
   </div>
 
-  <script type="module">
-    const loginContainer = document.getElementById('login-container');
-    const settingsContainer = document.getElementById('settings-container');
-    const error = document.getElementById('error');
-
-    // --- LOGIN LOGIC ---
-    document.getElementById('loginBtn').onclick = async () => {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-
-      try {
-        const res = await fetch('/.netlify/functions/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
-        });
-
-        const data = await res.json();
-
-        if (data.success) {
-          loginContainer.style.display = 'none';
-          settingsContainer.style.display = 'block';
-          initCounters();
-        } else {
-          error.textContent = 'Invalid username or password';
-        }
-      } catch (err) {
-        error.textContent = 'Error connecting to server';
-        console.error(err);
-      }
-    };
-  </script>
+  <script type="module" src="scripts/login.js"></script>
+  <script type="module" src="scripts/settings.js"></script>
+  <script src="scripts/counters.js"></script>
 </body>
 </html>
