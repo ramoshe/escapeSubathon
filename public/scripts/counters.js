@@ -23,6 +23,7 @@ function countHours() {
 }
 
 window.onload = () => {
+    getCount();
     countHours();
     setTimeout(countHours, 1800000);
 }
