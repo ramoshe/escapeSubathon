@@ -5,6 +5,3 @@
 [[edge_functions]]
 path = "/api/hello"
 function = "hello"
-
-path = "/api/counter"
-function = "counter"
