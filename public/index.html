@@ -4,6 +4,7 @@
   <title>Overlay Control</title>
 </head>
 <body>
+  <!-- LOGIN FORM -->
   <div id="login-container">
     <h2>Enter Credentials</h2>
     <input id="username" placeholder="Username">
@@ -12,17 +13,23 @@
     <p id="error" style="color:red;"></p>
   </div>
 
+  <!-- SETTINGS / COUNTERS -->
   <div id="settings-container" style="display:none;">
     <h2>Overlay Settings</h2>
-    <!-- Your overlay controls go here -->
-    <p>Welcome! You can edit overlay settings now.</p>
+
+    <div>
+      <p>Sub Count: <span id="count">0</span></p>
+      <p>Hours: <span id="hours">0</span></p>
+    </div>
+    <!-- Add more overlay controls here -->
   </div>
 
-  <script>
+  <script type="module">
     const loginContainer = document.getElementById('login-container');
     const settingsContainer = document.getElementById('settings-container');
     const error = document.getElementById('error');
 
+    // --- LOGIN LOGIC ---
     document.getElementById('loginBtn').onclick = async () => {
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
@@ -39,6 +46,7 @@
         if (data.success) {
           loginContainer.style.display = 'none';
           settingsContainer.style.display = 'block';
+          initCounters();
         } else {
           error.textContent = 'Invalid username or password';
         }
@@ -47,6 +55,31 @@
         console.error(err);
       }
     };
+
+    // --- COUNTERS LOGIC ---
+    async function getCount() {
+      const res = await fetch('/.netlify/functions/counter');
+      const text = await res.text();
+      // Assuming your counter function just returns a number
+      const countDisplay = document.getElementById('count');
+      countDisplay.innerHTML = text || '0';
+    }
+
+    function countHours() {
+      const start = new Date("2025-09-08T19:00:00-05:00");
+      const current = new Date();
+      const diffMs = current - start;
+      const diffHours = diffMs / (1000 * 60 * 60);
+
+      const hours = document.getElementById('hours');
+      hours.innerHTML = Math.floor(diffHours);
+    }
+
+    function initCounters() {
+      getCount();
+      countHours();
+      setInterval(countHours, 1800000); // update every 30 min
+    }
   </script>
 </body>
 </html>
