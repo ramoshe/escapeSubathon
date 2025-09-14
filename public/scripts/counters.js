@@ -1,6 +1,14 @@
-// TODO connect to Netlify blob
-// TODO add count to slide in DOM
 // TODO can i find next goal based on count?
+
+// SUBS COUNTER
+async function getCount() {
+    const res = await fetch('/.netlify/functions/counter');
+    const data = await res.json();
+    const count = data.count;
+
+    const countDisplay = document.getElementById('count');
+    countDisplay.innerHTML = count;
+}
 
 // HOURS COUNTER
 function countHours() {
