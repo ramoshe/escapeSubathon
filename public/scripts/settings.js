@@ -1,3 +1,9 @@
+// TODO
+// -add subs/dollars
+// -reset current count
+// -toggle IRL
+// -toggle Sleep
+
 function addDonation() {
     // if (isNameSelected()) {
         const total = document.querySelector(".total");
