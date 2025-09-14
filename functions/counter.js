@@ -2,6 +2,8 @@ import { getStore } from "@netlify/blobs";
 
 export default async (request, context) => {
 
+  const store = getStore("subcount");
+
   if (request.method === "GET") {
     // Read the counter
     const count = await store.get("count");
