@@ -3,27 +3,23 @@ import { getStore } from "@netlify/blobs";
 const store = getStore("users");
 
 export default async (request) => {
-  const usersRaw = await store.get("users") || "{}"; // raw string from the Blob
-  console.log("Raw Blob:", usersRaw);
+  if (request.method !== "POST") {
+    return new Response("Method Not Allowed", { status: 405 });
+  }
 
-  if (request.method === "POST") {
-    const { username, password } = await request.json();
-    console.log("Login attempt:", username, password);
+  const { username, password } = await request.json();
 
-    // Check if the string contains the exact username:password pair
-    if (!usersRaw.includes(`"${username}":"${password}"`)) {
-      console.log("Login failed for", username);
-      return new Response(JSON.stringify({ success: false }), {
-        headers: { "content-type": "application/json" },
-        status: 401
-      });
-    }
+  // Get the stored password for this username directly
+  const storedPassword = await store.get(username);
 
-    console.log("Login successful for", username);
-    return new Response(JSON.stringify({ success: true }), {
-      headers: { "content-type": "application/json" }
+  if (!storedPassword || storedPassword !== password) {
+    return new Response(JSON.stringify({ success: false }), {
+      headers: { "content-type": "application/json" },
+      status: 401
     });
   }
 
-  return new Response("Method Not Allowed", { status: 405 });
+  return new Response(JSON.stringify({ success: true }), {
+    headers: { "content-type": "application/json" }
+  });
 };
