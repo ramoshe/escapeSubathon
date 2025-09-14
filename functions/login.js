@@ -3,14 +3,14 @@ import { getStore } from "@netlify/blobs";
 const store = getStore("users");
 
 export default async (request) => {
-  const usersRaw = await store.get("users") || "{}";  // raw string
+  const usersRaw = await store.get("users") || "{}"; // raw string from the Blob
   console.log("Raw Blob:", usersRaw);
 
   if (request.method === "POST") {
     const { username, password } = await request.json();
     console.log("Login attempt:", username, password);
 
-    // Instead of JSON.parse, just check the string
+    // Check if the string contains the exact username:password pair
     if (!usersRaw.includes(`"${username}":"${password}"`)) {
       console.log("Login failed for", username);
       return new Response(JSON.stringify({ success: false }), {
