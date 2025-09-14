@@ -1,7 +1,7 @@
 .bigemo {
     font-size: 200%;
     margin: .4em;
-    animation: bounce 7000ms infinite;
+    animation: bounce 4900ms infinite;
 }
 @keyframes bounce {
     0%, 5%, 15%, 40% {

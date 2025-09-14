@@ -4,7 +4,7 @@ window.menuData = {
         },
         {   "amt": 2,   "emo": "🎯",  "txt": "Wheel Pick"
         },
-        {   "amt": 3,   "emo": "👤",  "txt": "Name or Pic"
+        {   "amt": 3,   "emo": "💌",  "txt": "Mystery Mail"
         },
         {   "amt": 4,   "emo": "🌟",  "txt": "Goal Special"
         },
@@ -60,15 +60,15 @@ window.menuData = {
         }
     ],
     IRLrewards: [
-        {   "amt": 1,   "emo": "⁉️",  "txt": "Something"
+        {   "amt": 1,   "emo": "💞",  "txt": "Compliment"
         },
-        {   "amt": 2,   "emo": "⁉️",  "txt": "Something"
+        {   "amt": 2,   "emo": "🤖",  "txt": "Robot Mode"
         },
-        {   "amt": 3,   "emo": "⁉️",  "txt": "Something"
+        {   "amt": 3,   "emo": "💌",  "txt": "Mystery Mail"
         },
         {   "amt": 4,   "emo": "🌟",  "txt": "Goal Special"
         },
-        {   "amt": 5,   "emo": "⁉️",  "txt": "Something"
+        {   "amt": 5,   "emo": "🎤",  "txt": "Shoutout FR"
         },
         {   "amt": 10,  "emo": "🍭",  "txt": "Treat Me"
         },
