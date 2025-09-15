@@ -8,7 +8,7 @@ window.onload = () => {
 
 // SUBS COUNTER
 async function getCount() {
-    const res = await fetch('/.netlify/functions/counter');
+    const res = await fetch('/.netlify/functions/settings');
     const data = await res.json();
     const count = data.count;
 

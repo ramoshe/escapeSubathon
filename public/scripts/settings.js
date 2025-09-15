@@ -1,57 +1,99 @@
-// TODO
-// -add subs/dollars
-// -reset current count
-// -toggle IRL
-// -toggle Sleep
+const loginForm = document.getElementById("login-form");
+const settingsForm = document.getElementById("settings-form");
+const counterInput = document.getElementById("counter");
+const sleepInput = document.getElementById("sleepActive");
+const irlInput = document.getElementById("irlActive");
+const msg = document.getElementById("settings-msg");
 
-const settingsMsg = document.getElementById('settingsMsg');
-const settingsForm = document.getElementById('settingsForm');
+let currentUser = null;
+let currentPass = null;
 
-settingsForm.onsubmit = async (e) => {
-  e.preventDefault();
+// --- 1. AUTHORIZE USER ---
+async function authorizeUser(username, password) {
+  const res = await fetch("/.netlify/functions/authorization", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password }),
+  });
+  const data = await res.json();
+  return data.success;
+}
 
-  if (!window.currentUser || !window.currentPass) {
-    settingsMsg.textContent = "You must log in first.";
+// --- 2. SHOW SETTINGS ---
+async function showSettings() {
+  const username = loginForm.username.value;
+  const password = loginForm.password.value;
+
+  const authorized = await authorizeUser(username, password);
+  if (!authorized) {
+    alert("Invalid username or password");
     return;
   }
 
-  const sendSettings = [];
+  currentUser = username;
+  currentPass = password;
 
-  const subsToAdd = parseInt(document.getElementById('subsToAdd').value);
-  // TODO
+  loginForm.style.display = "none";
+  settingsForm.style.display = "block";
 
-  const dollsToAdd = parseInt(document.getElementById('dollsToAdd').value.trim());
-  // TODO
+  // Load current settings (GET from settings blob)
+  const allKeys = await fetchSettings();
+  counterInput.value = allKeys.counter ?? 0;
+  sleepInput.checked = allKeys.sleepActive === "true";
+  irlInput.checked = allKeys.irlActive === "true";
+}
 
-
-  const resetCount = parseInt(document.getElementById('resetCount').value.trim());
-  resetCount ? sendSettings.push({setting: subCount, value: resetCount}) : null;
-
-  const sleepToggle = document.getElementById('sleepToggle').value;
-  sleepToggle ? sendSettings.push({setting: sleepActive, value: true}) : sendSettings.push({setting: sleepActive, value: false});
-
-  const irlToggle = document.getElementById('irlToggle').value;
-  irl ? sendSettings.push({setting: irlActive, value: true}) : sendSettings.push({setting: irlActive, value: false});
-
-  try {
-    const res = await fetch('/.netlify/functions/settings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: window.currentUser,
-        password: window.currentPass,
-        settings: sendSettings
-      })
-    });
-
-    const data = await res.json();
-    if (data.success) {
-      settingsMsg.textContent = "Settings updated successfully!";
-    } else {
-      settingsMsg.textContent = "Error: " + (data.error || "Update failed");
-    }
-  } catch (err) {
-    settingsMsg.textContent = "Server error while saving settings";
-    console.error(err);
+// --- 3. SUBMIT SETTINGS ---
+async function submitSettings() {
+  if (!currentUser || !currentPass) {
+    msg.textContent = "Not authorized";
+    return;
   }
-};
+
+  // Re-authenticate before submitting
+  const authorized = await authorizeUser(currentUser, currentPass);
+  if (!authorized) {
+    msg.textContent = "Authorization failed";
+    return;
+  }
+
+  // Build updates array
+  const updates = [
+    { key: "counter", value: counterInput.value },
+    { key: "sleepActive", value: sleepInput.checked },
+    { key: "irlActive", value: irlInput.checked },
+  ];
+
+  const res = await fetch("/.netlify/functions/settings", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ updates }),
+  });
+
+  const data = await res.json();
+  if (data.success) {
+    msg.textContent = "Settings saved!";
+  } else {
+    msg.textContent = "Save failed: " + (data.error || "Unknown");
+  }
+}
+
+// --- HELPER: FETCH CURRENT SETTINGS ---
+async function fetchSettings() {
+  const res = await fetch("/.netlify/functions/settings", {
+    method: "GET",
+  });
+  const data = await res.json();
+  return data.settings || {};
+}
+
+// --- EVENTS ---
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  await showSettings();
+});
+
+settingsForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  await submitSettings();
+});

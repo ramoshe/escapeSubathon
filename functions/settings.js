@@ -1,6 +1,5 @@
 import { getStore } from "@netlify/blobs";
 
-const usersStore = getStore("users");
 const settingsStore = getStore("settings");
 
 export default async (request) => {
@@ -8,23 +7,38 @@ export default async (request) => {
     return new Response("Method Not Allowed", { status: 405 });
   }
 
-  const { username, password, settings } = await request.json();
+  try {
+    const { updates } = await request.json();
 
-  // Verify user
-  const storedPassword = await usersStore.get(username);
-  if (!storedPassword || storedPassword !== password) {
-    return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
+    if (!Array.isArray(updates)) {
+      return new Response(JSON.stringify({ success: false, error: "Updates must be an array" }), {
+        headers: { "content-type": "application/json" },
+        status: 400,
+      });
+    }
+
+    // Apply updates to the blob (plain object)
+    for (const { key, value } of updates) {
+      if (typeof key === "string") {
+        await settingsStore.set(key, value);
+      }
+    }
+
+    // Return all current settings
+    const allKeys = await settingsStore.list();
+    const currentSettings = {};
+    for (const key of allKeys) {
+      currentSettings[key] = await settingsStore.get(key);
+    }
+
+    return new Response(JSON.stringify({ success: true, settings: currentSettings }), {
       headers: { "content-type": "application/json" },
-      status: 401
+    });
+
+  } catch (err) {
+    return new Response(JSON.stringify({ success: false, error: err.message }), {
+      headers: { "content-type": "application/json" },
+      status: 500,
     });
   }
-
-  // Save new settings (all at once)
-settings.forEach(async item => {
-    await settingsStore.set(item.setting, item.value);
-});
-
-  return new Response(JSON.stringify({ success: true }), {
-    headers: { "content-type": "application/json" }
-  });
 };

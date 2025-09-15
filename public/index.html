@@ -11,45 +11,39 @@
   <link rel="stylesheet" href="styles/index.css">
 </head>
 <body>
+
   <!-- LOGIN FORM -->
-  <div id="login-container">
+  <form id="login-form">
     <h1>Enter Credentials</h1>
     <label for="username">Name</label>
-    <input id="username">
+    <input id="username" name="username" required>
     <label for="password">Code</label>
-    <input id="password" type="password">
-    <button id="loginBtn">Login</button>
+    <input id="password" type="password" name="password" required>
+    <button type="submit">Login</button>
     <p id="error" class="error"></p>
-  </div>
+  </form>
 
-  <!-- SETTINGS FORM (hidden at first) -->
-  <!-- <div id="settings-container"> -->
-  <div id="settings-container" style="display:none;">
+  <!-- SETTINGS FORM (hidden initially) -->
+  <form id="settings-form" style="display:none;">
     <h1>Overlay Settings</h1>
-    <h2>Current Sub Count: <span id="count">0</span></h2>
-    <p id="settingsMsg" class="msg"></p>
-    <form>
-      <label for="subsToAdd">Add Subs</label>
-      <input type="text" class="input" id="subsToAdd" />
+    <h2>Current Sub Count: <span id="counter">0</span></h2>
+    <p id="settings-msg" class="msg"></p>
 
-      <label for="dollsToAdd">Add Dollars</label>
-      <input type="text" class="input" id="dollsToAdd" />
+    <label for="counter">Set Sub Count</label>
+    <input type="number" id="counter" name="counter" />
 
-      <label for="resetCount">Reset Sub Count</label>
-      <input type="text" class="input" id="resetCount"/>
+    <input type="checkbox" id="sleepActive" name="sleepActive" />
+    <label for="sleepActive">Sleep Stream Active</label>
 
-      <input type="checkbox" id="sleepToggle" name="sleep" />
-      <label for="sleep">Sleep Stream Active</label>
+    <input type="checkbox" id="irlActive" name="irlActive" />
+    <label for="irlActive">IRL Stream Active</label>
 
-      <input type="checkbox" id="irlToggle" name="irl" />
-      <label for="irl">IRL Stream Active</label>
+    <button type="submit">Save Settings</button>
+  </form>
 
-      <button type="submit">Submit</button>
-    </form>
-  </div>
-
-  <script type="module" src="scripts/login.js"></script>
+  <!-- Scripts -->
   <script type="module" src="scripts/settings.js"></script>
   <script src="scripts/counters.js"></script>
+
 </body>
 </html>
