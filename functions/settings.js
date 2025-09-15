@@ -3,6 +3,24 @@ import { getStore } from "@netlify/blobs";
 const settingsStore = getStore("settings");
 
 export default async (request) => {
+  if (request.method === "GET") {
+    try {
+      const keys = await settingsStore.list();
+      const currentSettings = {};
+      for (const key of keys) {
+        currentSettings[key] = await settingsStore.get(key);
+      }
+      return new Response(JSON.stringify({ success: true, settings: currentSettings }), {
+        headers: { "content-type": "application/json" },
+      });
+    } catch (err) {
+      return new Response(JSON.stringify({ success: false, error: err.message }), {
+        headers: { "content-type": "application/json" },
+        status: 500,
+      });
+    }
+  }
+
   if (request.method !== "POST") {
     return new Response("Method Not Allowed", { status: 405 });
   }
