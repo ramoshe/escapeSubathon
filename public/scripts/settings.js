@@ -19,6 +19,13 @@ async function authorizeUser(username, password) {
   return data.success;
 }
 
+// --- HELPER: FETCH CURRENT SETTINGS ---
+async function fetchSettings() {
+  const res = await fetch("/.netlify/functions/settings", { method: "GET" });
+  const data = await res.json();
+  return data.settings || {};
+}
+
 // --- 2. SHOW SETTINGS ---
 async function showSettings() {
   const username = loginForm.username.value;
@@ -36,11 +43,11 @@ async function showSettings() {
   loginForm.style.display = "none";
   settingsForm.style.display = "block";
 
-  // Load current settings (GET from settings blob)
-  const allKeys = await fetchSettings();
-  counterInput.value = allKeys.counter ?? 0;
-  sleepInput.checked = allKeys.sleepActive === "true";
-  irlInput.checked = allKeys.irlActive === "true";
+  // Load current settings
+  const allSettings = await fetchSettings();
+  counterInput.value = allSettings.counter ?? 0;
+  sleepInput.checked = allSettings.sleepActive === "true";
+  irlInput.checked = allSettings.irlActive === "true";
 }
 
 // --- 3. SUBMIT SETTINGS ---
@@ -60,8 +67,8 @@ async function submitSettings() {
   // Build updates array
   const updates = [
     { key: "counter", value: counterInput.value },
-    { key: "sleepActive", value: sleepInput.checked },
-    { key: "irlActive", value: irlInput.checked },
+    { key: "sleepActive", value: sleepInput.checked.toString() },
+    { key: "irlActive", value: irlInput.checked.toString() },
   ];
 
   const res = await fetch("/.netlify/functions/settings", {
@@ -74,17 +81,8 @@ async function submitSettings() {
   if (data.success) {
     msg.textContent = "Settings saved!";
   } else {
-    msg.textContent = "Save failed: " + (data.error || "Unknown");
+    msg.textContent = "Save failed: " + (data.error || "Unknown error");
   }
-}
-
-// --- HELPER: FETCH CURRENT SETTINGS ---
-async function fetchSettings() {
-  const res = await fetch("/.netlify/functions/settings", {
-    method: "GET",
-  });
-  const data = await res.json();
-  return data.settings || {};
 }
 
 // --- EVENTS ---

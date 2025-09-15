@@ -3,12 +3,13 @@ import { getStore } from "@netlify/blobs";
 const settingsStore = getStore("settings");
 
 export default async (request) => {
+  // --- GET current settings ---
   if (request.method === "GET") {
     try {
       const keys = await settingsStore.list();
       const currentSettings = {};
-      for (const key of keys) {
-        currentSettings[key] = await settingsStore.get(key);
+      for (const entry of keys) {             // <-- entry is an object
+        currentSettings[entry.key] = await settingsStore.get(entry.key);
       }
       return new Response(JSON.stringify({ success: true, settings: currentSettings }), {
         headers: { "content-type": "application/json" },
@@ -21,6 +22,7 @@ export default async (request) => {
     }
   }
 
+  // --- POST: update settings ---
   if (request.method !== "POST") {
     return new Response("Method Not Allowed", { status: 405 });
   }
@@ -35,7 +37,6 @@ export default async (request) => {
       });
     }
 
-    // Apply updates to the blob (plain object)
     for (const { key, value } of updates) {
       if (typeof key === "string") {
         await settingsStore.set(key, value);
@@ -45,8 +46,8 @@ export default async (request) => {
     // Return all current settings
     const allKeys = await settingsStore.list();
     const currentSettings = {};
-    for (const key of allKeys) {
-      currentSettings[key] = await settingsStore.get(key);
+    for (const entry of allKeys) {           // <-- same fix here
+      currentSettings[entry.key] = await settingsStore.get(entry.key);
     }
 
     return new Response(JSON.stringify({ success: true, settings: currentSettings }), {
