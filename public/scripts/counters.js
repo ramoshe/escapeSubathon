@@ -10,7 +10,7 @@ window.onload = () => {
 async function getCount() {
     const res = await fetch('/.netlify/functions/settings');
     const data = await res.json();
-    const count = data.count;
+    const count = data.count || 0;
 
     const countDisplay = document.getElementById('count');
     countDisplay.innerHTML = count.toFixed(0);
@@ -18,7 +18,7 @@ async function getCount() {
 
 // HOURS COUNTER
 function countHours() {
-    const start = new Date("2025-09-14T19:00:00-00:00");
+    const start = new Date("2025-10-04T23:00:00.000Z");
     const current = new Date();
 
     const diffMs = current - start;
