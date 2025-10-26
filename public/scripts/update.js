@@ -1,4 +1,9 @@
 // TODO can i find next goal based on count?
+// TODO set from blobs
+    // window.onJoy = true;
+    // window.sleeping = true;
+    // window.outIRL = true;
+    // window.special = {active:true, subs:10, reward:"Cool Reward", mins:10};
 
 window.onload = () => {
     getCount();

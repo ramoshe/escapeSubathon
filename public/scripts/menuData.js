@@ -29,7 +29,7 @@ window.menuData = {
         {   "amt": 5,   "emo": "🔂",  "txt": "Goal Repeat"    },
         {   "amt": 7,   "emo": "💌",  "txt": "Mystery Mail"   },
         {   "amt": 10,  "emo": "🌹",  "txt": "Discord Date"   },
-        {   "amt": 20,  "emo": "🍆",  "txt": "Go Joystick"    }
+        {   "amt": 20,  "emo": "🍆",  "txt": "Get Naughty"    }
     ],
     IRLrewards: [
         {   "amt": 1,   "emo": "💞",  "txt": "Compliment"     },

@@ -2,12 +2,11 @@
 const rewards = window.menuData.rewards;
 const goals = window.menuData.goals;
 const IRLrewards = window.menuData.IRLrewards;
-
-//! Pull in SETTINGS from blob
-const sleeping = false;
-const IRLactive = false;
-const joyLive = false;
-const special = {active: false, subs: 0, reward: "", mins: 0};
+// TEST
+    // window.onJoy = true;
+    // window.sleeping = true;
+    // window.outIRL = true;
+    // window.special = {active:true, subs:10, reward:"Cool Reward", mins:10};
 
 // Holder for ALL SLIDES
 window.generatedSlides = [];
@@ -19,7 +18,7 @@ const goal3 = makeSlide("list", {title:"Top Goals", items: goals.slice(14)}, "go
 window.generatedSlides.push(goal1, goal2, goal3);
 
 // +EQUALS SLIDE -platform setting
-const eqPlat = joyLive ? `100 Tokens` : `500 Kicks`;
+const eqPlat = window.onJoy ? `100 Tokens` : `500 Kicks`;
 const eqDoll = `<span class="eq-or eq-text">or</span>
 $5 USD<span class="eq-pref eq-text">☜ helps most</span>
 <span class="eq-text">!escape for links</span>`;
@@ -27,10 +26,10 @@ const equalSlide = makeSlide("text", {emo:"👯‍♀️", title:"Equal to 1 Sub
 window.generatedSlides.push(equalSlide);
 
 // +REWARDS SLIDE -normal, IRL, or sleeping
-if (sleeping) {
+if (window.sleeping) {
     const sleepSlide = makeSlide("text", {emo:"😴", title:"Rewards & Goals are paused", txt: [`will resume upon awakening`]}, "sleep", "fade");
     window.generatedSlides.push(sleepSlide);
-} else if (IRLactive) {
+} else if (window.outIRL) {
     const IRLrewardSlide = makeSlide("list", {title: "IRL Rewards", items: IRLrewards}, "reward", "fade");
     window.generatedSlides.push(IRLrewardSlide);
 } else {
@@ -38,10 +37,11 @@ if (sleeping) {
     window.generatedSlides.push(rewardSlide);
 }
 
-//! +SPECIAL SLIDE -countdown optional
-if (special.active) {
+// +SPECIAL SLIDE -countdown optional
+if (window.special.active) {
     const reward = `<span class="amount">— ${special.subs} Subs - or $${special.subs*5} —</span>
-    <br /><span class="thing">${special.reward}</span>`
+    <br /><span class="thing">${special.reward}</span>`;
+    // !
     const timer = special.mins > 0 ? `ends in ${special.mins} min!` : ``;
     const specialSlide = makeSlide("text", {emo:"🌟", title:"REWARD SPECIAL", txt: [reward, timer]}, "special", "fade");
     window.generatedSlides.push(specialSlide);

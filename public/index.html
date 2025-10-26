@@ -1,49 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
 
-  <title>Overlay Control</title>
-  <link rel="stylesheet" href="styles/index.css">
+    <link rel="stylesheet" href="styles/allinfo.css">
+
+    <title>Ramo's Escape Subathon</title>
 </head>
 <body>
+    <div id="container">
+        <!-- TODO build layout with all subathon info -->
+        <h1>Ramo's Escape Subathon</h1>
+        <a href="/overlay">Overlay</a>
+    </div>
 
-  <!-- LOGIN FORM -->
-  <form id="login-form">
-    <h1>Enter Credentials</h1>
-    <label for="username">Name</label>
-    <input id="username" name="username" required>
-    <label for="password">Code</label>
-    <input id="password" type="password" name="password" required>
-    <button type="submit">Login</button>
-    <p id="error" class="error"></p>
-  </form>
-
-  <!-- SETTINGS FORM (hidden initially) -->
-  <form id="settings-form" style="display:none;">
-    <h1>Overlay Settings</h1>
-    <h2>Current Sub Count: <span id="counter">0</span></h2>
-    <p id="settings-msg" class="msg"></p>
-
-    <label for="counter">Set Sub Count</label>
-    <input type="number" id="counter" name="counter" />
-
-    <input type="checkbox" id="sleepActive" name="sleepActive" />
-    <label for="sleepActive">Sleep Stream Active</label>
-
-    <input type="checkbox" id="irlActive" name="irlActive" />
-    <label for="irlActive">IRL Stream Active</label>
-
-    <button type="submit">Save Settings</button>
-  </form>
-
-  <!-- Scripts -->
-  <script type="module" src="scripts/settings.js"></script>
-  <script src="scripts/counters.js"></script>
-
+    <script src="scripts/update.js"></script>
+    <script src="scripts/menuData.js"></script>
 </body>
 </html>
