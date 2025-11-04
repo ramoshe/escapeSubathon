@@ -4,61 +4,26 @@ export default async (request) => {
   const store = getStore("count");
   const key = "subCount";
 
-  // Extract headers
+  // Parse headers
   const headers = Object.fromEntries(request.headers);
-  const command = headers["x-kicklet-command"];
+  const modHeader = headers["x-kicklet-mod"];
 
-  // GET request with a Kicklet command
-  if (request.method === "GET" && command === "increment") {
+  // Handle Kicklet-style GET with sub count update
+  if (request.method === "GET" && modHeader) {
     try {
       const current = (await store.get(key)) ?? 0;
-      const newCount = current + 1;
-      await store.set(key, newCount);
-
-      return new Response(JSON.stringify({ count: newCount }), {
-        headers: { "Content-Type": "application/json" }
-      });
-    } catch (err) {
-      return new Response(JSON.stringify({ error: "Failed to increment count." }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-  }
-
-  // Normal GET (just read the count)
-  if (request.method === "GET") {
-    try {
-      const count = (await store.get(key)) ?? 0;
-
-      return new Response(JSON.stringify({ count }), {
-        headers: { "Content-Type": "application/json" }
-      });
-    } catch (err) {
-      return new Response(JSON.stringify({ error: "Failed to read sub count." }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-  }
-
-  // POST update logic remains (for frontend or admin tools)
-  if (request.method === "POST") {
-    try {
-      const body = await request.json();
-      const current = (await store.get(key)) ?? 0;
-
       let newCount;
 
-      if (typeof body.increment === "number") {
-        newCount = current + body.increment;
-      } else if (typeof body.set === "number") {
-        newCount = body.set;
+      if (modHeader.startsWith("=")) {
+        // Set absolute count, e.g. "=14"
+        const value = parseInt(modHeader.slice(1), 10);
+        if (isNaN(value)) throw new Error("Invalid set value");
+        newCount = value;
       } else {
-        return new Response(
-          JSON.stringify({ error: "Missing valid 'increment' or 'set' field." }),
-          { status: 400, headers: { "Content-Type": "application/json" } }
-        );
+        // Increment or decrement, e.g. "3" or "-2"
+        const delta = parseInt(modHeader, 10);
+        if (isNaN(delta)) throw new Error("Invalid increment value");
+        newCount = current + delta;
       }
 
       await store.set(key, newCount);
@@ -67,7 +32,22 @@ export default async (request) => {
         headers: { "Content-Type": "application/json" }
       });
     } catch (err) {
-      return new Response(JSON.stringify({ error: "Failed to update count." }), {
+      return new Response(JSON.stringify({ error: err.message }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+  }
+
+  // Basic GET to read current count
+  if (request.method === "GET") {
+    try {
+      const count = (await store.get(key)) ?? 0;
+      return new Response(JSON.stringify({ count }), {
+        headers: { "Content-Type": "application/json" }
+      });
+    } catch (err) {
+      return new Response(JSON.stringify({ error: "Failed to read sub count." }), {
         status: 500,
         headers: { "Content-Type": "application/json" }
       });
