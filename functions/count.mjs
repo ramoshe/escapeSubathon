@@ -8,6 +8,7 @@ export default async (request) => {
   const headers = Object.fromEntries(request.headers);
   const modHeader = headers["x-kicklet-mod"];
   console.log("modHeader RAW:", JSON.stringify(modHeader));
+  console.log("typeof modHeader:", typeof modHeader);
 
   // Handle Kicklet-style GET with sub count update
   if (request.method === "GET" && modHeader) {
@@ -17,14 +18,15 @@ export default async (request) => {
 
       if (modHeader.startsWith("=")) {
         const value = parseInt(modHeader.slice(1).trim(), 10);
+        console.log("Set value:", value, "Type:", typeof value);
         if (isNaN(value)) throw new Error("Invalid set value");
         newCount = value;
       } else {
         const delta = parseInt(modHeader.trim(), 10);
+        console.log("Parsed delta:", delta, "Type:", typeof delta);
         if (isNaN(delta)) throw new Error("Invalid increment value");
-        newCount = current + delta;
+        newCount = Number(current) + Number(delta); // 💥 make sure it's numeric addition
       }
-
 
       await store.set(key, newCount);
 
