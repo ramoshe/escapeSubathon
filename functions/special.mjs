@@ -1,0 +1,1 @@
+// {active:true, subs:10, reward:"Cool Reward", mins:10}
