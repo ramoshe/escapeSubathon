@@ -15,16 +15,15 @@ export default async (request) => {
       let newCount;
 
       if (modHeader.startsWith("=")) {
-        // Set absolute count, e.g. "=14"
-        const value = parseInt(modHeader.slice(1), 10);
+        const value = parseInt(modHeader.slice(1).trim(), 10);
         if (isNaN(value)) throw new Error("Invalid set value");
         newCount = value;
       } else {
-        // Increment or decrement, e.g. "3" or "-2"
-        const delta = parseInt(modHeader, 10);
+        const delta = parseInt(modHeader.trim(), 10);
         if (isNaN(delta)) throw new Error("Invalid increment value");
         newCount = current + delta;
       }
+
 
       await store.set(key, newCount);
 
