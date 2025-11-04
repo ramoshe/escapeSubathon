@@ -7,6 +7,7 @@ export default async (request) => {
   // Parse headers
   const headers = Object.fromEntries(request.headers);
   const modHeader = headers["x-kicklet-mod"];
+  console.log("modHeader RAW:", JSON.stringify(modHeader));
 
   // Handle Kicklet-style GET with sub count update
   if (request.method === "GET" && modHeader) {
