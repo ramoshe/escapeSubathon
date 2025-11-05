@@ -22,7 +22,10 @@ export default async (request) => {
     if (request.method === "GET" && typeof mod === "string" && mod.trim() !== "") {
       let newCount;
 
-      if (mod.startsWith("=")) {
+      if (mod.trim().toLowerCase() === "q") {
+        // Just return current count — don't change anything
+        newCount = current;
+      } else if (mod.startsWith("=")) {
         const value = parseInt(mod.slice(1).trim(), 10);
         if (isNaN(value)) throw new Error("Invalid set value");
 
