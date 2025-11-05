@@ -1,7 +1,7 @@
 import pkg from "pg";
 const { Pool } = pkg;
 
-// Use Netlify's built-in DB env variable
+// Use Netlify's environment variable for DB connection
 const pool = new Pool({
   connectionString: process.env.NETLIFY_DATABASE_URL,
   ssl: { rejectUnauthorized: false }
@@ -18,7 +18,7 @@ export default async (request) => {
   try {
     const client = await pool.connect();
 
-    // SET or INCREMENT logic
+    // If mod header is present and has a value
     if (request.method === "GET" && typeof mod === "string" && mod.trim() !== "") {
       let newCount;
 
@@ -51,7 +51,7 @@ export default async (request) => {
       });
     }
 
-    // No mod header: just return the current count
+    // Fallback: return current count
     if (request.method === "GET") {
       const result = await client.query("SELECT count FROM sub_count LIMIT 1");
       const current = result.rows[0]?.count ?? 0;
@@ -65,11 +65,7 @@ export default async (request) => {
 
     return new Response("Unsupported method", { status: 405 });
   } catch (err) {
-    console.error("Function error:", err);
-    return new Response(JSON.stringify({
-      error: err.message,
-      details: err.stack
-    }), {
+    return new Response(JSON.stringify({ error: err.message }), {
       status: 500,
       headers: { "Content-Type": "application/json" }
     });
