@@ -65,7 +65,11 @@ export default async (request) => {
 
     return new Response("Unsupported method", { status: 405 });
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), {
+    console.error("Function error:", err);
+    return new Response(JSON.stringify({
+      error: err.message,
+      details: err.stack
+    }), {
       status: 500,
       headers: { "Content-Type": "application/json" }
     });
