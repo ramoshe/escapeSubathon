@@ -8,10 +8,7 @@ const pool = new Pool({
 
 export default async (request) => {
   const headers = Object.fromEntries(request.headers);
-  console.log("DEBUG headers:", headers);
-
   const raw = headers["x-kicklet-special"];
-  console.log("DEBUG raw header value:", raw);
 
   try {
     const client = await pool.connect();
@@ -25,7 +22,6 @@ export default async (request) => {
       goal = parseInt(parts[0], 10) || 0;
       label = parts[1]?.trim() || "";
       minutes = parts[2] ? parseInt(parts[2], 10) : null;
-      console.log("DEBUG parsed:", { goal, label, minutes });
 
       if (!label || goal < 1) {
         throw new Error("Missing or invalid goal or label.");
@@ -42,8 +38,6 @@ export default async (request) => {
     client.release();
 
     const current = result.rows[0] ?? {};
-    console.log("DEBUG current row:", current);
-
     const now = new Date();
     const startDate = current.timer_start ? new Date(current.timer_start) : null;
 
@@ -52,7 +46,6 @@ export default async (request) => {
       const end = new Date(startDate.getTime() + current.timer_minutes * 60000);
       timeRemaining = Math.max(0, Math.floor((end - now) / 1000));
     }
-    console.log("DEBUG timeRemaining:", timeRemaining);
 
     return new Response(JSON.stringify({
       label: current.label ?? "",
@@ -63,7 +56,6 @@ export default async (request) => {
       headers: { "Content-Type": "application/json" }
     });
   } catch (err) {
-    console.error("ERROR special.mjs:", err);
     return new Response(JSON.stringify({ error: err.message }), {
       status: 500,
       headers: { "Content-Type": "application/json" }
