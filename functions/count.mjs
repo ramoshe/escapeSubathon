@@ -20,31 +20,33 @@ export default async (request) => {
 
     // If mod header is present and has a value
     if (request.method === "GET" && typeof mod === "string" && mod.trim() !== "") {
+      const result = await client.query("SELECT count FROM sub_count LIMIT 1");
+      const current = result.rows[0]?.count ?? 0;
+
       let newCount;
 
       if (mod.trim().toLowerCase() === "q") {
-        // Just return current count — don't change anything
         newCount = current;
       } else if (mod.startsWith("=")) {
         const value = parseInt(mod.slice(1).trim(), 10);
         if (isNaN(value)) throw new Error("Invalid set value");
 
-        const result = await client.query(
+        const update = await client.query(
           "UPDATE sub_count SET count = $1 RETURNING count",
           [value]
         );
 
-        newCount = result.rows[0]?.count ?? value;
+        newCount = update.rows[0]?.count ?? value;
       } else {
         const delta = parseInt(mod.trim(), 10);
         if (isNaN(delta)) throw new Error("Invalid increment/decrement value");
 
-        const result = await client.query(
+        const update = await client.query(
           "UPDATE sub_count SET count = count + $1 RETURNING count",
           [delta]
         );
 
-        newCount = result.rows[0]?.count;
+        newCount = update.rows[0]?.count;
       }
 
       client.release();
