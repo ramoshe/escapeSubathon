@@ -7,51 +7,50 @@ const pool = new Pool({
 });
 
 export default async (request) => {
+  const headers = Object.fromEntries(request.headers);
+  const toggleKey = headers["x‑kicklet‑mod"];
+  console.log("Toggle request for:", toggleKey);
+
   try {
     const client = await pool.connect();
 
     if (request.method === "GET") {
       const result = await client.query("SELECT is_irl, is_sleep, is_joystick FROM stream_toggles LIMIT 1");
-      const toggles = result.rows[0] ?? {
-        is_irl: false,
-        is_sleep: false,
-        is_joystick: false
-      };
-
       client.release();
-      return new Response(JSON.stringify(toggles), {
+      return new Response(JSON.stringify(result.rows[0] ?? {}), {
         headers: { "Content-Type": "application/json" }
       });
     }
 
     if (request.method === "POST") {
-      const headers = Object.fromEntries(request.headers);
-      const toggleKey = headers["x-kicklet-toggle"];
-
       if (!["irl", "sleep", "joystick"].includes(toggleKey)) {
-        return new Response(JSON.stringify({ error: "Invalid toggle name" }), {
-          status: 400,
-          headers: { "Content-Type": "application/json" }
-        });
+        client.release();
+        return new Response(JSON.stringify({ error: "Invalid toggle key" }), { status: 400, headers: { "Content-Type": "application/json" }});
       }
 
       const field = `is_${toggleKey}`;
-
-      // Flip the boolean value directly in SQL
-      const update = await client.query(
+      const updateResult = await client.query(
         `UPDATE stream_toggles SET ${field} = NOT ${field} RETURNING ${field}`
       );
 
-      const newValue = update.rows[0]?.[field];
-
       client.release();
+
+      console.log("Toggle update result:", updateResult.rows);
+
+      if (updateResult.rows.length === 0) {
+        return new Response(JSON.stringify({ error: "No row updated" }), { status: 500, headers: { "Content-Type": "application/json" }});
+      }
+
+      const newValue = updateResult.rows[0][field];
       return new Response(JSON.stringify({ [field]: newValue }), {
         headers: { "Content-Type": "application/json" }
       });
     }
 
+    client.release();
     return new Response("Method Not Allowed", { status: 405 });
   } catch (err) {
+    console.error("Toggle function error:", err);
     return new Response(JSON.stringify({ error: err.message }), {
       status: 500,
       headers: { "Content-Type": "application/json" }
