@@ -8,7 +8,7 @@ const pool = new Pool({
 
 export default async (request) => {
   const headers = Object.fromEntries(request.headers);
-  const toggleKey = headers["x‑kicklet‑mod"];
+  const toggleKey = headers["x-kicklet-mod"];
   console.log("Toggle request for:", toggleKey);
 
   try {
