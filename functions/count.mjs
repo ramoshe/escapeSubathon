@@ -1,13 +1,14 @@
 import pkg from "pg";
 const { Pool } = pkg;
 
+// Use Netlify's built-in DB env variable
 const pool = new Pool({
   connectionString: process.env.NETLIFY_DATABASE_URL,
-  ssl: { rejectUnauthorized: false } // needed for Neon over HTTPS
+  ssl: { rejectUnauthorized: false }
 });
 
 export default async (request) => {
-  if (request.method !== "GET" && request.method !== "POST") {
+  if (!["GET", "POST"].includes(request.method)) {
     return new Response("Method Not Allowed", { status: 405 });
   }
 
@@ -17,34 +18,52 @@ export default async (request) => {
   try {
     const client = await pool.connect();
 
-    // Read current count
-    const result = await client.query("SELECT count FROM sub_count LIMIT 1");
-    const current = result.rows[0]?.count ?? 0;
+    // SET or INCREMENT logic
+    if (request.method === "GET" && typeof mod === "string" && mod.trim() !== "") {
+      let newCount;
 
-    let newCount = current;
-
-    // Handle update via header
-    if (typeof mod === "string" && mod.trim() !== "") {
       if (mod.startsWith("=")) {
         const value = parseInt(mod.slice(1).trim(), 10);
         if (isNaN(value)) throw new Error("Invalid set value");
 
-        await client.query("UPDATE sub_count SET count = $1", [value]);
-        newCount = value;
+        const result = await client.query(
+          "UPDATE sub_count SET count = $1 RETURNING count",
+          [value]
+        );
+
+        newCount = result.rows[0]?.count ?? value;
       } else {
         const delta = parseInt(mod.trim(), 10);
         if (isNaN(delta)) throw new Error("Invalid increment/decrement value");
 
-        await client.query("UPDATE sub_count SET count = count + $1", [delta]);
-        newCount = current + delta;
+        const result = await client.query(
+          "UPDATE sub_count SET count = count + $1 RETURNING count",
+          [delta]
+        );
+
+        newCount = result.rows[0]?.count;
       }
+
+      client.release();
+
+      return new Response(JSON.stringify({ count: newCount }), {
+        headers: { "Content-Type": "application/json" }
+      });
     }
 
-    client.release();
+    // No mod header: just return the current count
+    if (request.method === "GET") {
+      const result = await client.query("SELECT count FROM sub_count LIMIT 1");
+      const current = result.rows[0]?.count ?? 0;
 
-    return new Response(JSON.stringify({ count: newCount }), {
-      headers: { "Content-Type": "application/json" }
-    });
+      client.release();
+
+      return new Response(JSON.stringify({ count: current }), {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
+    return new Response("Unsupported method", { status: 405 });
   } catch (err) {
     return new Response(JSON.stringify({ error: err.message }), {
       status: 500,
