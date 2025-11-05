@@ -8,7 +8,10 @@ const pool = new Pool({
 
 export default async (request) => {
   const headers = Object.fromEntries(request.headers);
+  console.log("DEBUG headers:", headers);
+
   const raw = headers["x-kicklet-special"];
+  console.log("DEBUG raw header value:", raw);
 
   try {
     const client = await pool.connect();
@@ -22,6 +25,7 @@ export default async (request) => {
       goal = parseInt(parts[0], 10) || 0;
       label = parts[1]?.trim() || "";
       minutes = parts[2] ? parseInt(parts[2], 10) : null;
+      console.log("DEBUG parsed:", { goal, label, minutes });
 
       if (!label || goal < 1) {
         throw new Error("Missing or invalid goal or label.");
@@ -29,36 +33,37 @@ export default async (request) => {
 
       const start = new Date().toISOString();
       await client.query(
-        "UPDATE special_offer SET label = $1, goal = $2, timer_minutes = $3, timer_start = $4",
+        "UPDATE reward_offer SET label = $1, goal = $2, timer_minutes = $3, timer_start = $4",
         [label, goal, minutes, start]
       );
     }
 
-    const result = await client.query("SELECT * FROM special_offer LIMIT 1");
+    const result = await client.query("SELECT label, goal, timer_minutes, timer_start FROM reward_offer LIMIT 1");
     client.release();
 
     const current = result.rows[0] ?? {};
+    console.log("DEBUG current row:", current);
+
     const now = new Date();
-    const start = current.timer_start ? new Date(current.timer_start) : null;
+    const startDate = current.timer_start ? new Date(current.timer_start) : null;
 
     let timeRemaining = null;
-    if (start && current.timer_minutes) {
-      const end = new Date(start.getTime() + current.timer_minutes * 60000);
+    if (startDate && current.timer_minutes) {
+      const end = new Date(startDate.getTime() + current.timer_minutes * 60000);
       timeRemaining = Math.max(0, Math.floor((end - now) / 1000));
     }
+    console.log("DEBUG timeRemaining:", timeRemaining);
 
-    return new Response(
-      JSON.stringify({
-        label: current.label ?? "",
-        goal: current.goal ?? 0,
-        timer_minutes: current.timer_minutes ?? null,
-        time_remaining: timeRemaining
-      }),
-      {
-        headers: { "Content-Type": "application/json" }
-      }
-    );
+    return new Response(JSON.stringify({
+      label: current.label ?? "",
+      goal: current.goal ?? 0,
+      timer_minutes: current.timer_minutes ?? null,
+      time_remaining: timeRemaining
+    }), {
+      headers: { "Content-Type": "application/json" }
+    });
   } catch (err) {
+    console.error("ERROR special.mjs:", err);
     return new Response(JSON.stringify({ error: err.message }), {
       status: 500,
       headers: { "Content-Type": "application/json" }
