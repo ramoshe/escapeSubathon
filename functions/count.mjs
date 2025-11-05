@@ -2,7 +2,7 @@ import pkg from "pg";
 const { Pool } = pkg;
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.NETLIFY_DATABASE_URL,
   ssl: { rejectUnauthorized: false } // needed for Neon over HTTPS
 });
 
