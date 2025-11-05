@@ -7,65 +7,57 @@ const pool = new Pool({
 });
 
 export default async (request) => {
+  const headers = Object.fromEntries(request.headers);
+  const raw = headers["x-kicklet-special"];
+
   try {
     const client = await pool.connect();
 
-    if (request.method === "GET") {
-      const result = await client.query("SELECT label, goal, timer_minutes, timer_start FROM reward_offer LIMIT 1");
-      const row = result.rows[0];
+    let goal = 0;
+    let label = "";
+    let minutes = null;
 
-      let time_remaining = null;
+    if (typeof raw === "string" && raw.includes("|")) {
+      const parts = raw.split("|");
+      goal = parseInt(parts[0], 10) || 0;
+      label = parts[1]?.trim() || "";
+      minutes = parts[2] ? parseInt(parts[2], 10) : null;
 
-      if (row?.timer_minutes && row?.timer_start) {
-        const startTime = new Date(row.timer_start).getTime();
-        const endTime = startTime + row.timer_minutes * 60 * 1000;
-        const now = Date.now();
-        time_remaining = Math.max(0, Math.floor((endTime - now) / 1000));
+      if (!label || goal < 1) {
+        throw new Error("Missing or invalid goal or label.");
       }
 
-      client.release();
-      return new Response(JSON.stringify({
-        label: row?.label ?? "",
-        goal: row?.goal ?? 0,
-        timer_minutes: row?.timer_minutes,
-        timer_start: row?.timer_start,
-        time_remaining
-      }), {
-        headers: { "Content-Type": "application/json" }
-      });
+      const start = new Date().toISOString();
+      await client.query(
+        "UPDATE special_offer SET label = $1, goal = $2, timer_minutes = $3, timer_start = $4",
+        [label, goal, minutes, start]
+      );
     }
 
-    if (request.method === "POST") {
-      const headers = Object.fromEntries(request.headers);
+    const result = await client.query("SELECT * FROM special_offer LIMIT 1");
+    client.release();
 
-      const goal = parseInt(headers["x-kicklet-goal"], 10);
-      const label = headers["x-kicklet-label"] ?? "";
-      const minutes = headers["x-kicklet-timer"] ? parseInt(headers["x-kicklet-timer"], 10) : null;
-      const now = new Date().toISOString();
+    const current = result.rows[0] ?? {};
+    const now = new Date();
+    const start = current.timer_start ? new Date(current.timer_start) : null;
 
-      if (isNaN(goal) || !label) {
-        return new Response(JSON.stringify({ error: "Invalid reward parameters" }), {
-          status: 400,
-          headers: { "Content-Type": "application/json" }
-        });
+    let timeRemaining = null;
+    if (start && current.timer_minutes) {
+      const end = new Date(start.getTime() + current.timer_minutes * 60000);
+      timeRemaining = Math.max(0, Math.floor((end - now) / 1000));
+    }
+
+    return new Response(
+      JSON.stringify({
+        label: current.label ?? "",
+        goal: current.goal ?? 0,
+        timer_minutes: current.timer_minutes ?? null,
+        time_remaining: timeRemaining
+      }),
+      {
+        headers: { "Content-Type": "application/json" }
       }
-
-      const update = await client.query(`
-        UPDATE reward_offer
-        SET label = $1,
-            goal = $2,
-            timer_minutes = $3,
-            timer_start = $4
-        RETURNING *
-      `, [label, goal, minutes, now]);
-
-      client.release();
-      return new Response(JSON.stringify(update.rows[0]), {
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-
-    return new Response("Method Not Allowed", { status: 405 });
+    );
   } catch (err) {
     return new Response(JSON.stringify({ error: err.message }), {
       status: 500,
