@@ -42,7 +42,8 @@ if (window.special.active) {
     const reward = `<span class="amount">— ${special.subs} Subs - or $${special.subs*5} —</span>
     <br /><span class="thing">${special.reward}</span>`;
     // !
-    const timer = special.mins > 0 ? `ends in ${special.mins} min!` : ``;
+    const timer = special.mins > 0 ? `ends in <span id="rewardTimer">${special.mins}</span>
+ min!` : ``;
     const specialSlide = makeSlide("text", {emo:"🌟", title:"REWARD SPECIAL", txt: [reward, timer]}, "special", "fade");
     window.generatedSlides.push(specialSlide);
 }
