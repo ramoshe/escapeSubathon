@@ -8,45 +8,49 @@ const IRLrewards = window.menuData.IRLrewards;
     // window.outIRL = true;
     // window.special = {active:true, subs:10, reward:"Cool Reward", mins:10};
 
+window.buildSlides = function buildSlides() {
 // Holder for ALL SLIDES
-window.generatedSlides = [];
+    window.generatedSlides = [];
 
 // +GOALS SLIDES
-const goal1 = makeSlide("list", {title:"Goals", items: goals.slice(0,7)}, "goal", "fadepush");
-const goal2 = makeSlide("list", {title:"More Goals", items: goals.slice(7,14)}, "goal", "push");
-const goal3 = makeSlide("list", {title:"Top Goals", items: goals.slice(14)}, "goal", "pushfade");
-window.generatedSlides.push(goal1, goal2, goal3);
+    const goal1 = makeSlide("list", {title:"Goals", items: goals.slice(0,7)}, "goal", "fadepush");
+    const goal2 = makeSlide("list", {title:"More Goals", items: goals.slice(7,14)}, "goal", "push");
+    const goal3 = makeSlide("list", {title:"Top Goals", items: goals.slice(14)}, "goal", "pushfade");
+    window.generatedSlides.push(goal1, goal2, goal3);
 
 // +EQUALS SLIDE -platform setting
-const eqPlat = window.onJoy ? `100 Tokens` : `500 Kicks`;
-const eqDoll = `<span class="eq-or eq-text">or</span>
-$5 USD<span class="eq-pref eq-text">☜ helps most</span>
-<span class="eq-text">!escape for links</span>`;
-const equalSlide = makeSlide("text", {emo:"👯‍♀️", title:"Equal to 1 Sub", txt: [eqPlat, eqDoll]}, "equal", "fade");
-window.generatedSlides.push(equalSlide);
+    const eqPlat = window.onJoy ? `100 Tokens` : `500 Kicks`;
+    const eqDoll = `<span class="eq-or eq-text">or</span>
+    $5 USD<span class="eq-pref eq-text">☜ helps most</span>
+    <span class="eq-text">!escape for links</span>`;
+    const equalSlide = makeSlide("text", {emo:"👯‍♀️", title:"Equal to 1 Sub", txt: [eqPlat, eqDoll]}, "equal", "fade");
+    window.generatedSlides.push(equalSlide);
 
 // +REWARDS SLIDE -normal, IRL, or sleeping
-if (window.sleeping) {
-    const sleepSlide = makeSlide("text", {emo:"😴", title:"Rewards & Goals are paused", txt: [`will resume upon awakening`]}, "sleep", "fade");
-    window.generatedSlides.push(sleepSlide);
-} else if (window.outIRL) {
-    const IRLrewardSlide = makeSlide("list", {title: "IRL Rewards", items: IRLrewards}, "reward", "fade");
-    window.generatedSlides.push(IRLrewardSlide);
-} else {
-    const rewardSlide = makeSlide("list", {title: "Rewards", items: rewards}, "reward", "fade");
-    window.generatedSlides.push(rewardSlide);
-}
+    if (window.sleeping) {
+        const sleepSlide = makeSlide("text", {emo:"😴", title:"Rewards & Goals are paused", txt: [`will resume upon awakening`]}, "sleep", "fade");
+        window.generatedSlides.push(sleepSlide);
+    } else if (window.outIRL) {
+        const IRLrewardSlide = makeSlide("list", {title: "IRL Rewards", items: IRLrewards}, "reward", "fade");
+        window.generatedSlides.push(IRLrewardSlide);
+    } else {
+        const rewardSlide = makeSlide("list", {title: "Rewards", items: rewards}, "reward", "fade");
+        window.generatedSlides.push(rewardSlide);
+    }
 
 // +SPECIAL SLIDE -countdown optional
-if (window.special.active) {
-    const reward = `<span class="amount">— ${special.subs} Subs - or $${special.subs*5} —</span>
-    <br /><span class="thing">${special.reward}</span>`;
-    // !
-    const timer = special.mins > 0 ? `ends in <span id="rewardTimer">${special.mins}</span>
- min!` : ``;
-    const specialSlide = makeSlide("text", {emo:"🌟", title:"REWARD SPECIAL", txt: [reward, timer]}, "special", "fade");
-    window.generatedSlides.push(specialSlide);
-}
+    if (window.special.active) {
+        const reward = `<span class="amount">— ${window.special.subs} Subs - or $${window.special.subs*5} —</span>
+        <br /><span class="thing">${window.special.reward}</span>`;
+        // !
+        const timer = window.special.mins > 0 ? `ends in <span id="rewardTimer">${window.special.mins}</span>
+    min!` : ``;
+        const specialSlide = makeSlide("text", {emo:"🌟", title:"REWARD SPECIAL", txt: [reward, timer]}, "special", "fade");
+        window.generatedSlides.push(specialSlide);
+    }
+};
+window.refreshOverlay();
+window.buildSlides();
 
 // -= HELPER FUNCTIONS that create slides and their content
 

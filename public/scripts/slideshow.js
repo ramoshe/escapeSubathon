@@ -1,26 +1,42 @@
 // -= TIMING CONTROLS
 const overlapTime = 1400;
     // REAL
-// const holdTime = 9800;
-// const shortHoldTime = 4900;
+const holdTime = 9800;
+const shortHoldTime = 4900;
     // TEST
-const holdTime = 2100;
-const shortHoldTime = 1400;
+// const holdTime = 2100;
+// const shortHoldTime = 1400;
 
 // -= Set up the slides
 const container = document.getElementById('container');
-
 const slidesFromHTML = Array.from(container.querySelectorAll('.slide'));
-
 window.generatedSlides.forEach(slide => container.appendChild(slide));
-
-const slides = [...slidesFromHTML, ...window.generatedSlides];
+let slides = [...slidesFromHTML, ...window.generatedSlides];
 
 slides[0].style.opacity = '1';
 slides[0].style.visibility = 'visible';
 
 // -= START SLIDESHOW
 setTimeout(() => showSlide(1), holdTime);
+
+// -= Rebuild slides based on latest data
+function mountSlides() {
+    // Clear container and re-append original HTML slides, then the latest generated ones
+    container.innerHTML = '';
+    slidesFromHTML.forEach(s => container.appendChild(s));
+    (window.generatedSlides || []).forEach(s => container.appendChild(s));
+    // Refresh our slides array reference so showSlide() indexes the new set
+    slides = [...slidesFromHTML, ...window.generatedSlides];
+}
+
+// When update.js finishes fetching Neon/Netlify data, it dispatches this:
+// window.dispatchEvent(new Event("overlayDataUpdated"));
+window.addEventListener('overlayDataUpdated', () => {
+    // Rebuild the array of slide nodes based on the latest booleans/special
+    window.buildSlides?.();
+    // Swap them into the DOM; timers/animation flow continue as-is
+    mountSlides();
+});
 
 // -= Slideshow function
 let current = 0;
@@ -82,3 +98,4 @@ function showSlide(nextIndex) {
         showSlide((current + 1) % slides.length);
     }, totalDelay);
 }
+
