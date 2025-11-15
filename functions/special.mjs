@@ -13,45 +13,36 @@ export default async (request) => {
   try {
     const client = await pool.connect();
 
-    let goal = 0;
-    let label = "";
-    let minutes = null;
+    let subs = 0;
+    let reward = "";
+
+    // Explicit deactivate: header "x" (case-insensitive, spaces ok)
+    if (typeof raw === "string" && raw.trim().toLowerCase() === "x") {
+      await client.query("UPDATE special_offer SET active = FALSE");
+    }
 
     if (typeof raw === "string" && raw.includes("|")) {
       const parts = raw.split("|");
-      goal = parseInt(parts[0], 10) || 0;
-      label = parts[1]?.trim() || "";
-      minutes = parts[2] ? parseInt(parts[2], 10) : null;
-
-      if (!label || goal < 1) {
-        throw new Error("Missing or invalid goal or label.");
-      }
-
-      const start = new Date().toISOString();
+      subs = parseInt(parts[0], 10) || 0;
+      reward = stripOuterQuotes(parts[1]?.trim() || "");
+      // if (!reward || subs < 1) {
+      //   throw new Error("Missing or invalid subs or reward.");
+      // }
       await client.query(
-        "UPDATE reward_offer SET label = $1, goal = $2, timer_minutes = $3, timer_start = $4",
-        [label, goal, minutes, start]
+        "UPDATE special_offer SET reward = $1, subs = $2, active = TRUE",
+        [reward, subs]
       );
     }
 
-    const result = await client.query("SELECT label, goal, timer_minutes, timer_start FROM reward_offer LIMIT 1");
+    const result = await client.query("SELECT reward, subs, active FROM special_offer LIMIT 1");
     client.release();
 
     const current = result.rows[0] ?? {};
-    const now = new Date();
-    const startDate = current.timer_start ? new Date(current.timer_start) : null;
-
-    let timeRemaining = null;
-    if (startDate && current.timer_minutes) {
-      const end = new Date(startDate.getTime() + current.timer_minutes * 60000);
-      timeRemaining = Math.max(0, Math.floor((end - now) / 1000));
-    }
 
     return new Response(JSON.stringify({
-      label: current.label ?? "",
-      goal: current.goal ?? 0,
-      timer_minutes: current.timer_minutes ?? null,
-      time_remaining: timeRemaining
+      active: current.active || false,
+      reward: stripOuterQuotes(current.reward ?? ""),
+      subs: current.subs ?? 0,
     }), {
       headers: { "Content-Type": "application/json" }
     });
@@ -62,3 +53,11 @@ export default async (request) => {
     });
   }
 };
+
+function stripOuterQuotes(str) {
+  if (!str) return "";
+  const pairs = { '"':'"', "'":"'", '“':'”', '‘':'’' };
+  const first = str[0], last = str[str.length - 1];
+  if (pairs[first] && last === pairs[first]) return str.slice(1, -1).trim();
+  return str.trim();
+}

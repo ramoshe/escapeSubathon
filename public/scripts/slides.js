@@ -28,7 +28,7 @@ window.buildSlides = function buildSlides() {
 
 // +REWARDS SLIDE -normal, IRL, or sleeping
     if (window.sleeping) {
-        const sleepSlide = makeSlide("text", {emo:"😴", title:"Rewards & Goals are paused", txt: [`will resume upon awakening`]}, "sleep", "fade");
+        const sleepSlide = makeSlide("text", {emo:"😴", title:"Rewards are paused", txt: [`will resume upon awakening`]}, "sleep", "fade");
         window.generatedSlides.push(sleepSlide);
     } else if (window.outIRL) {
         const IRLrewardSlide = makeSlide("list", {title: "IRL Rewards", items: IRLrewards}, "reward", "fade");
@@ -42,10 +42,7 @@ window.buildSlides = function buildSlides() {
     if (window.special.active) {
         const reward = `<span class="amount">— ${window.special.subs} Subs - or $${window.special.subs*5} —</span>
         <br /><span class="thing">${window.special.reward}</span>`;
-        // !
-        const timer = window.special.mins > 0 ? `ends in <span id="rewardTimer">${window.special.mins}</span>
-    min!` : ``;
-        const specialSlide = makeSlide("text", {emo:"🌟", title:"REWARD SPECIAL", txt: [reward, timer]}, "special", "fade");
+        const specialSlide = makeSlide("text", {emo:"🌟", title:"REWARD SPECIAL", txt: [reward]}, "special", "fade");
         window.generatedSlides.push(specialSlide);
     }
 };
